@@ -57,7 +57,7 @@ Evaluates a three card hand. Has no knowledge of bets, dealer rules, or game flo
 - Receives a three card `Hand` instance
 - Raises TypeError if the hand received is no instance of Hand
 - Raises `ValueError` if the hand does not contain exactly 3 cards
-- Returns `True` if the hand contains a Queen or higher, `False` otherwise
+- Returns `True` if the hand is Queen-high or better, `False` otherwise
 
 ---
 
