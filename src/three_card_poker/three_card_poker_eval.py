@@ -25,4 +25,6 @@ class ThreeCardPokerEval:
             return True
         
         #STRAIGHT FLUSH 
-        if len(suits) 
+        if len(suits) == 1:
+            
+            pass
