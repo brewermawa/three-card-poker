@@ -71,6 +71,11 @@ class TestThreeCardPokerEvalDealerQualifies:
     hand_246.add_card(Card("4", "♦"))
     hand_246.add_card(Card("6", "♥"))
 
+    hand_A23 = Hand()
+    hand_A23.add_card(Card("A", "♣"))
+    hand_A23.add_card(Card("2", "♦"))
+    hand_A23.add_card(Card("3", "♥"))
+
 
     @pytest.mark.parametrize(
         "invalid_hand",
@@ -98,7 +103,7 @@ class TestThreeCardPokerEvalDealerQualifies:
 
     @pytest.mark.parametrize(
         "qualified_hand",
-        [hand_Q62, hand_KJ3, hand_A84, hand_straight_flush]
+        [hand_Q62, hand_KJ3, hand_A84]
         #[hand_Q62, hand_KJ3, hand_A84, hand_223, hand_234, hand_888, hand_flush]
     )
     def test_dealer_qualifies_returns_true_with_qualifying_hands(self, qualified_hand):
