@@ -16,6 +16,27 @@ class ThreeCardPokerEval:
         
     
     @staticmethod
+    def _is_flush(suits: list) -> bool:
+        return len(set(suits)) == 1
+
+    
+    @staticmethod
+    def _is_straight(values: list) -> bool:
+        sorted_values = sorted(values)
+        return all([(second_value - first_value) == 1 for first_value, second_value in zip(sorted_values, sorted_values[1:])])
+    
+    
+    @staticmethod
+    def _is_three_of_a_kind(values: list) -> bool:
+        return len(set(values)) == 1
+    
+
+    @staticmethod
+    def _is_pair(values: list) -> bool:
+        return len(set(values)) == 2
+    
+
+    @staticmethod
     def _ranks_to_values(ranks: list) -> list:
         if len(set(ranks).intersection({"A", "2", "3"})) == 3:
             return[1, 2, 3]
@@ -29,9 +50,24 @@ class ThreeCardPokerEval:
     @staticmethod
     def _rank_eval(hand: Hand) -> ThreeCardPokerRank:
         values = ThreeCardPokerEval._ranks_to_values([card.rank for card in hand.cards])
+        suits = [card.suit for card in hand.cards]
 
-        print()
-        print(values)
+        if ThreeCardPokerEval._is_flush(suits) and ThreeCardPokerEval._is_straight(values):
+            return ThreeCardPokerRank.STRAIGHT_FLUSH
+
+        if ThreeCardPokerEval._is_flush(suits):
+            return ThreeCardPokerRank.FLUSH
+        
+        if ThreeCardPokerEval._is_straight(values):
+            return ThreeCardPokerRank.STRAIGHT
+
+        if ThreeCardPokerEval._is_three_of_a_kind(values):
+            return ThreeCardPokerRank.THREE_OF_A_KIND
+        
+        if ThreeCardPokerEval._is_pair(values):
+            return ThreeCardPokerRank.PAIR
+        
+        return ThreeCardPokerRank.HIGH_CARD
 
         
     @staticmethod
@@ -48,3 +84,24 @@ class ThreeCardPokerEval:
             return False
         
         return True
+
+
+    @staticmethod
+    def eval(hand: Hand) -> dict:
+        ThreeCardPokerEval._validate_is_hand(hand)
+        ThreeCardPokerEval._validate_3_cards(hand)
+
+        values = ThreeCardPokerEval._ranks_to_values([card.rank for card in hand.cards])
+        sorted_values = sorted(values, reverse=True)
+        rank = ThreeCardPokerEval._rank_eval(hand)
+
+        if rank == ThreeCardPokerRank.PAIR:
+            pair_of = sorted_values[1]
+            third_card = sorted_values[2] if pair_of == sorted_values[0] else sorted_values[0]
+            sorted_values.clear()
+            sorted_values = [pair_of, pair_of, third_card]
+
+
+        return {"rank": rank, "sorted_hand": sorted_values}
+
+
