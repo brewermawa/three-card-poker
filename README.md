@@ -67,7 +67,7 @@ Evaluates the player's hand against the PairPlus pay table. Has no knowledge of 
 
 ## Methods
 
-### eval
+### pair_plus
 - Receives a three card `Hand` instance
 - Raises TypeError if the hand received is no instance of Hand
 - Raises `ValueError` if the hand does not contain exactly 3 cards

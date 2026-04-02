@@ -105,3 +105,19 @@ class ThreeCardPokerEval:
         return {"rank": rank, "sorted_hand": sorted_values}
 
 
+    @staticmethod
+    def pair_plus(hand: Hand) -> int:
+        BET_MULTIPLIER ={
+            ThreeCardPokerRank.HIGH_CARD: 0,
+            ThreeCardPokerRank.PAIR: 1,
+            ThreeCardPokerRank.FLUSH: 3,
+            ThreeCardPokerRank.STRAIGHT: 6, 
+            ThreeCardPokerRank.THREE_OF_A_KIND: 30,
+            ThreeCardPokerRank.STRAIGHT_FLUSH: 40
+        }
+
+        ThreeCardPokerEval._validate_is_hand(hand)
+        ThreeCardPokerEval._validate_3_cards(hand)
+
+        return BET_MULTIPLIER[ThreeCardPokerEval._rank_eval(hand)]
+

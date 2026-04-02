@@ -186,3 +186,50 @@ class TestThreeCardPokerEval:
         result = ThreeCardPokerEval.eval(hand)
         assert result["rank"] == expected_rank
         assert result["sorted_hand"] == sorted_hand
+
+
+#-----------------------------------------------------
+
+    @pytest.mark.parametrize(
+        "invalid_hand",
+        [
+            {"card1": Card("A", "♣"), "card2": Card("J", "♦")},
+            Card("J", "♦"),
+            (("A", "♣"), ("J", "♦")),
+            None,
+            True
+        ],
+    )
+    def test_pair_plus_raises_typeerror_if_hand_is_not_instance_of_hand(self, invalid_hand):
+        with pytest.raises(TypeError):
+            ThreeCardPokerEval.pair_plus(invalid_hand)
+
+
+    @pytest.mark.parametrize(
+        "invalid_hand",
+        [hand_zero_cards, hand_one_card, hand_two_cards, hand_four_cards]
+    )
+    def test_pair_plus_raises_valueerror_if_hand_does_not_have_3_cards(self, invalid_hand):
+        with pytest.raises(ValueError):
+            ThreeCardPokerEval.pair_plus(invalid_hand)
+
+
+    @pytest.mark.parametrize(
+        "hand, bet_multiplier",
+        [
+            (hand_A84, 0),
+            (hand_246, 0),
+            (hand_A23, 6),
+            (hand_A23_straigth_flush, 40),
+            (hand_straight_flush, 40),
+            (hand_flush, 3),
+            (hand_888, 30),
+            (hand_234, 6),
+            (hand_AKQ, 6),
+            (hand_223, 1),
+            (hand_668, 1),
+            (hand_662, 1),
+        ]
+    )
+    def test_pair_plus_returs_correct_bet_multiplier(self, hand, bet_multiplier):
+        assert ThreeCardPokerEval.pair_plus(hand) == bet_multiplier
