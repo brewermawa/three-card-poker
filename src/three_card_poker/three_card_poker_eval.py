@@ -96,9 +96,9 @@ class ThreeCardPokerEval:
         rank = ThreeCardPokerEval._rank_eval(hand)
 
         if rank == ThreeCardPokerRank.PAIR:
+            #after sorting the list of values, the second member of the list will always be the value of the pair
             pair_of = sorted_values[1]
             third_card = sorted_values[2] if pair_of == sorted_values[0] else sorted_values[0]
-            sorted_values.clear()
             sorted_values = [pair_of, pair_of, third_card]
 
 
@@ -107,6 +107,9 @@ class ThreeCardPokerEval:
 
     @staticmethod
     def pair_plus(hand: Hand) -> int:
+        ThreeCardPokerEval._validate_is_hand(hand)
+        ThreeCardPokerEval._validate_3_cards(hand)
+
         BET_MULTIPLIER ={
             ThreeCardPokerRank.HIGH_CARD: 0,
             ThreeCardPokerRank.PAIR: 1,
@@ -115,9 +118,6 @@ class ThreeCardPokerEval:
             ThreeCardPokerRank.THREE_OF_A_KIND: 30,
             ThreeCardPokerRank.STRAIGHT_FLUSH: 40
         }
-
-        ThreeCardPokerEval._validate_is_hand(hand)
-        ThreeCardPokerEval._validate_3_cards(hand)
 
         return BET_MULTIPLIER[ThreeCardPokerEval._rank_eval(hand)]
 
