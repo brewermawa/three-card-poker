@@ -2,9 +2,11 @@ import pytest
 
 from cards.card import Card
 from cards.hand import Hand
+from cards.deck import Deck
 
 from three_card_poker.three_card_poker_eval import ThreeCardPokerEval
 from three_card_poker.three_card_poker_rank import ThreeCardPokerRank
+from three_card_poker.three_card_poker import ThreeCardPoker
 
 class TestThreeCardPokerEval:
     hand_zero_cards = Hand()
@@ -233,3 +235,50 @@ class TestThreeCardPokerEval:
     )
     def test_pair_plus_returs_correct_bet_multiplier(self, hand, bet_multiplier):
         assert ThreeCardPokerEval.pair_plus(hand) == bet_multiplier
+
+
+class TestThreeCardPoker:
+    @pytest.mark.parametrize(
+        "deck",
+        [
+            ["2♣", "A♥"],
+            {"card1": {"rank": "A", "suit": "♥"}, "card2": {"rank": "7", "suit": "♥"}},
+            [],
+            None,
+        ]
+    )
+    def test_three_card_poker_raises_type_error_if_deck_is_not_instance_of_deck(self, deck):
+        with pytest.raises(TypeError):
+            ThreeCardPoker(deck)
+
+    def test_three_card_poker_raises_value_error_if_deck_contains_jokers(self):
+        deck = Deck(number_of_decks=1, jokers=True)
+        
+        with pytest.raises(ValueError):
+            ThreeCardPoker(deck)
+
+    @pytest.mark.parametrize(
+        "number_of_decks",
+        [2, 3, 4]
+    )
+    def test_three_card_poker_raises_value_error_if_deck_contains_not_exactly_one_deck(self, number_of_decks):
+        deck = Deck(number_of_decks=number_of_decks)
+
+        with pytest.raises(ValueError):
+            ThreeCardPoker(deck)
+
+
+    def test_three_card_poker_raises_value_error_if_deck_contains_less_than_52_cards(self):
+        deck = Deck(number_of_decks=1)
+        deck.burn()
+
+        with pytest.raises(ValueError):
+            ThreeCardPoker(deck)
+
+
+    def test_three_card_poker_initializes_player_and_dealer_hands_empty(self):
+        deck = Deck(number_of_decks=1)
+        three_card_poker = ThreeCardPoker(deck)
+
+        assert three_card_poker.player_hand.cards_in_hand == 0
+        assert three_card_poker.dealer_hand.cards_in_hand == 0
