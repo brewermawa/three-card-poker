@@ -237,6 +237,52 @@ class TestThreeCardPokerEval:
         assert ThreeCardPokerEval.pair_plus(hand) == bet_multiplier
 
 
+#-----------------------------------------------------
+
+    @pytest.mark.parametrize(
+        "invalid_hand",
+        [
+            {"card1": Card("A", "♣"), "card2": Card("J", "♦")},
+            Card("J", "♦"),
+            (("A", "♣"), ("J", "♦")),
+            None,
+            True
+        ],
+    )
+    def test_ante_bonus_raises_typeerror_if_hand_is_not_instance_of_hand(self, invalid_hand):
+        with pytest.raises(TypeError):
+            ThreeCardPokerEval.ante_bonus(invalid_hand)
+
+
+    @pytest.mark.parametrize(
+        "invalid_hand",
+        [hand_zero_cards, hand_one_card, hand_two_cards, hand_four_cards]
+    )
+    def test_ante_bonus_raises_valueerror_if_hand_does_not_have_3_cards(self, invalid_hand):
+        with pytest.raises(ValueError):
+            ThreeCardPokerEval.ante_bonus(invalid_hand)
+
+
+    @pytest.mark.parametrize(
+        "hand, bonus",
+        [
+            (hand_A84, 0),
+            (hand_A23, 1),
+            (hand_A23_straigth_flush, 6),
+            (hand_straight_flush, 6),
+            (hand_flush, 0),
+            (hand_888, 4),
+            (hand_234, 1),
+            (hand_AKQ, 1),
+            (hand_223, 0),
+            (hand_668, 0),
+            (hand_662, 0),
+        ]
+    )
+    def test_ante_bonus_returs_correct_bonus(self, hand, bonus):
+        assert ThreeCardPokerEval.ante_bonus(hand) == bonus
+
+
 class TestThreeCardPoker:
     @pytest.mark.parametrize(
         "deck",

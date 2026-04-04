@@ -120,4 +120,21 @@ class ThreeCardPokerEval:
         }
 
         return BET_MULTIPLIER[ThreeCardPokerEval._rank_eval(hand)]
+    
+
+    @staticmethod
+    def ante_bonus(hand: Hand) -> int:
+        ThreeCardPokerEval._validate_is_hand(hand)
+        ThreeCardPokerEval._validate_3_cards(hand)
+
+        BONUS = {
+            ThreeCardPokerRank.HIGH_CARD: 0,
+            ThreeCardPokerRank.PAIR: 0,
+            ThreeCardPokerRank.FLUSH: 0,
+            ThreeCardPokerRank.STRAIGHT: 1, 
+            ThreeCardPokerRank.THREE_OF_A_KIND: 4,
+            ThreeCardPokerRank.STRAIGHT_FLUSH: 6
+        }
+
+        return BONUS[ThreeCardPokerEval._rank_eval(hand)]
 

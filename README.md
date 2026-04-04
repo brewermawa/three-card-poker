@@ -61,11 +61,8 @@ Evaluates a three card hand. Has no knowledge of bets, dealer rules, or game flo
 
 ---
 
-# class PairPlus
 
 Evaluates the player's hand against the PairPlus pay table. Has no knowledge of the dealer's hand, the ante bet, or game flow.
-
-## Methods
 
 ### pair_plus
 - Receives a three card `Hand` instance
@@ -87,6 +84,23 @@ Evaluates the player's hand against the PairPlus pay table. Has no knowledge of 
 
 ---
 
+### ante_bonus
+- Receives a three card `Hand` instance
+- Raises TypeError if the hand received is no instance of Hand
+- Raises `ValueError` if the hand does not contain exactly 3 cards
+- Internally calls `ThreeCardPokerEval.eval()` to determine the hand rank
+- Returns an `int` representing the payout multiplier based on the following pay table:
+
+| Hand | Bonus |
+|---|---|
+| STRAIGHT | 1 |
+| THREE_OF_A_KIND | 4 |
+| STRAIGHT_FLUSH | 6 |
+
+- For any other hand, the methid should return 0 
+
+---
+
 # class ThreeCardPoker
 
 Initializes the components needed for a round of Three Card Poker.
@@ -104,3 +118,7 @@ Initializes the components needed for a round of Three Card Poker.
 ## Comments
 - `SixCardBonus` is intentionally out of scope for v1. It requires a 5-card traditional poker evaluator, which is a separate project.
 - Game flow, handler logic, and bet resolution belong in the DES layer, not here.
+
+## Technical Debt
+
+pair_plus, ante_bonus, and eval may be called separately on the same hand, resulting in redundant evaluations. A future optimization would be for the DES to call eval() once and pass the result to the methods that need it, avoiding repeated work on the same hand.
